@@ -1,4 +1,4 @@
-const { apiToken } = require('./secret');
+const { apiToken, secretKey } = require('./secret');
 
 const config = {
 	apiBaseUrl: 'https://api.themoviedb.org/3',
@@ -7,6 +7,8 @@ const config = {
 	searchPath: '/search',
 	apiRequestHeaders: { Authorization: `Bearer ${apiToken}` },
 	imdbBaseUrl: 'https://www.imdb.com/title/',
+	secretKey: secretKey,
+	bcryptWorkFactor: 14,
 };
 
 module.exports = config;
