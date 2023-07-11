@@ -1,9 +1,12 @@
 const { apiToken } = require('./secret');
 
 const config = {
-	baseApiUrl: 'https://api.themoviedb.org/3',
+	apiBaseUrl: 'https://api.themoviedb.org/3',
+	apiImageUrl: 'https://image.tmdb.org/t/p/',
+	posterSize: 'w780',
 	searchPath: '/search',
 	apiRequestHeaders: { Authorization: `Bearer ${apiToken}` },
+	imdbBaseUrl: 'https://www.imdb.com/title/',
 };
 
 module.exports = config;
