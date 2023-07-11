@@ -1,21 +1,21 @@
 const axios = require('axios');
 const { apiRequestHeaders, baseApiUrl, searchPath } = require('../config');
 
-const MOVIE_PATH = '/movie';
+const TV_PATH = '/tv';
 const APPEND_TO_RESPONSE = {
-	append_to_response: 'videos,watch/providers,credits',
+	append_to_response: 'external_ids,videos,watch/providers,credits',
 };
 
-class Movie {
+class Tv {
 	static async get(id) {
-		const res = await axios.get(baseApiUrl + MOVIE_PATH + `/${id}`, {
+		const res = await axios.get(baseApiUrl + TV_PATH + `/${id}`, {
 			headers: apiRequestHeaders,
 			params: APPEND_TO_RESPONSE,
 		});
 		return res.data;
 	}
 	static async search(query) {
-		const res = await axios.get(baseApiUrl + searchPath + MOVIE_PATH, {
+		const res = await axios.get(baseApiUrl + searchPath + TV_PATH, {
 			headers: apiRequestHeaders,
 			params: { query },
 		});
@@ -23,4 +23,4 @@ class Movie {
 	}
 }
 
-module.exports = Movie;
+module.exports = Tv;
