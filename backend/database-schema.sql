@@ -4,22 +4,14 @@ CREATE TABLE users (
 	password TEXT NOT NULL
 );
 
-CREATE TABLE collections (
-	id SERIAL PRIMARY KEY,
-	api_id INTEGER NOT NULL UNIQUE,
-	collection TEXT NOT NULL UNIQUE,
-	poster_url TEXT
-);
-
 CREATE TABLE movies (
 	id SERIAL PRIMARY KEY,
 	api_id INTEGER NOT NULL UNIQUE,
-	imdb_id INTEGER NOT NULL UNIQUE,
+	imdb_id TEXT NOT NULL UNIQUE,
 	title TEXT NOT NULL,
 	tagline TEXT,
 	overview TEXT,
-	poster_url TEXT,
-	collection_id INTEGER REFERENCES collections,
+	poster_path TEXT,
 	release_date DATE,
 	runtime INTEGER
 );
@@ -27,11 +19,11 @@ CREATE TABLE movies (
 CREATE TABLE tv (
 	id SERIAL PRIMARY KEY,
 	api_id INTEGER NOT NULL UNIQUE,
-	imdb_id INTEGER NOT NULL UNIQUE,
+	imdb_id TEXT NOT NULL UNIQUE,
 	name TEXT NOT NULL,
 	tagline TEXT,
 	overview TEXT,
-	poster_url TEXT,
+	poster_path TEXT,
 	first_air_date DATE,
 	seasons INTEGER,
 	episodes INTEGER,

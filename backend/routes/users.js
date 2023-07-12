@@ -22,4 +22,17 @@ router.patch('/:id/change-username', verifyCorrectUser, async (req, res) => {
 	return res.json({ token });
 });
 
+router.get('/:id/favorited-movies', verifyCorrectUser, async (req, res) => {
+	const user = res.locals.user;
+	const favorites = await User.getFavorites(user.id);
+	return res.json({ favorites });
+});
+
+router.post('/:id/favorited-movies', verifyCorrectUser, async (req, res) => {
+	const { id } = req.body;
+	const user = res.locals.user;
+	await User.addFavorite(user.id, id);
+	return res.json('favorited');
+});
+
 module.exports = router;

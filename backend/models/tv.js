@@ -14,30 +14,40 @@ const APPEND_TO_RESPONSE = {
 };
 
 class Tv {
-	static async get(id) {
+	static async getRawData(id) {
 		const res = await axios.get(apiBaseUrl + TV_PATH + `/${id}`, {
 			headers: apiRequestHeaders,
 			params: APPEND_TO_RESPONSE,
 		});
-		let series = {};
-		if (res && res.data) {
-			series.api_id = res.data.id;
-			series.imdb_url = imdbBaseUrl + res.data.external_ids.imdb_id;
-			series.name = res.data.name;
-			series.tagline = res.data.tagline;
-			series.genres = res.data.genres;
-			series.overview = res.data.overview;
-			series.poster_url = apiImageUrl + posterSize + res.data.poster_path;
-			series.first_air_date = res.data.first_air_date;
-			series.seasons = res.data.number_of_seasons;
-			series.episodes = res.data.number_of_episodes;
-			series.status = res.data.status;
-			series.videos = res.data.videos.results;
-			series.streaming = res.data['watch/providers'].results.US.flatrate;
-			series.credits = res.data.credits;
-		}
+		return res.data;
+	}
+
+	static filterData(raw) {
+		const series = {
+			api_id: raw.id,
+			imdb_url: imdbBaseUrl + raw.external_ids.imdb_id,
+			name: raw.name,
+			tagline: raw.tagline,
+			genres: raw.genres,
+			overview: raw.overview,
+			poster_url: apiImageUrl + posterSize + raw.poster_path,
+			first_air_date: raw.first_air_date,
+			seasons: raw.number_of_seasons,
+			episodes: raw.number_of_episodes,
+			status: raw.status,
+			videos: raw.videos.results,
+			streaming: raw['watch/providers'].results.US.flatrate,
+			credits: raw.credits,
+		};
 		return series;
 	}
+
+	static async get(id) {
+		const raw = await Tv.getRawData(id);
+		const series = Tv.filterData(raw);
+		return series;
+	}
+
 	static async search(query) {
 		const res = await axios.get(apiBaseUrl + searchPath + TV_PATH, {
 			headers: apiRequestHeaders,
