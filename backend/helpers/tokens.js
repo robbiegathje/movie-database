@@ -5,3 +5,5 @@ function createToken(user) {
 	const payload = { id: user.id, username: user.username };
 	return jwt.sign(payload, secretKey);
 }
+
+module.exports = { createToken };
