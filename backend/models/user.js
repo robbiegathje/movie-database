@@ -28,7 +28,7 @@ class User {
 		if (await bcrypt.compare(password, user.password)) {
 			return user;
 		} else {
-			throw new Error('unauthorized');
+			return false;
 		}
 	}
 
@@ -39,6 +39,35 @@ class User {
 			VALUES ($1, $2)
 			RETURNING id, username, password`,
 			[username, hashedPassword]
+		);
+		return results.rows[0];
+	}
+
+	static async changePassword(username, password, newPassword) {
+		if (!User.authenticate(username, password)) {
+			throw new Error('WRONG');
+		}
+		const hashedPassword = await bcrypt.hash(newPassword, bcryptWorkFactor);
+		const results = await db.query(
+			`UPDATE users
+			SET password=$1
+			WHERE username=$2
+			RETURNING id, username, password`,
+			[hashedPassword, username]
+		);
+		return results.rows[0];
+	}
+
+	static async changeUsername(username, password, newUsername) {
+		if (!User.authenticate(username, password)) {
+			throw new Error('WRONG');
+		}
+		const results = await db.query(
+			`UPDATE users
+			SET username=$1
+			WHERE username=$2
+			RETURNING id, username, password`,
+			[newUsername, username]
 		);
 		return results.rows[0];
 	}
