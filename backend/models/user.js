@@ -28,7 +28,7 @@ class User {
 		if (await bcrypt.compare(password, user.password)) {
 			return user;
 		} else {
-			return 'unauthenticated';
+			throw new Error('unauthorized');
 		}
 	}
 

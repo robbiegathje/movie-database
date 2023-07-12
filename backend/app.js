@@ -3,10 +3,12 @@ const authRoutes = require('./routes/auth');
 const movieRoutes = require('./routes/movies');
 const searchRoutes = require('./routes/search');
 const tvRoutes = require('./routes/tv');
+const { authenticateJWT } = require('./middleware/auth');
 
 const app = express();
 
 app.use(express.json());
+app.use(authenticateJWT);
 
 app.use('/auth', authRoutes);
 app.use('/api/movies', movieRoutes);
