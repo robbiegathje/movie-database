@@ -1,6 +1,7 @@
 const db = require('../db');
 const bcrypt = require('bcrypt');
 const Movie = require('./movie');
+const Tv = require('./tv');
 const { bcryptWorkFactor } = require('../config');
 
 class User {
@@ -90,6 +91,26 @@ class User {
 			`INSERT INTO favorited_movies (user_id, movie_id)
 			VALUES ($1, $2)`,
 			[userId, movie.id]
+		);
+	}
+
+	static async getFavoriteTv(id) {
+		const results = await db.query(
+			`SELECT tv.id, api_id, imdb_id, name, tagline, overview, poster_path, first_air_date, seasons, episodes, status
+			FROM tv
+			JOIN favorited_tv ON tv.id = favorited_tv.tv_id
+			WHERE user_id=$1`,
+			[id]
+		);
+		return results.rows;
+	}
+
+	static async addFavoriteTv(userId, tvApiId) {
+		const series = await Tv.save(tvApiId);
+		await db.query(
+			`INSERT INTO favorited_tv (user_id, tv_id)
+			VALUES ($1, $2)`,
+			[userId, series.id]
 		);
 	}
 }

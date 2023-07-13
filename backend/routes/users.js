@@ -35,4 +35,17 @@ router.post('/:id/favorite-movies', verifyCorrectUser, async (req, res) => {
 	return res.json('favorited');
 });
 
+router.get('/:id/favorite-tv', verifyCorrectUser, async (req, res) => {
+	const user = res.locals.user;
+	const favorites = await User.getFavoriteTv(user.id);
+	return res.json({ favorites });
+});
+
+router.post('/:id/favorite-tv', verifyCorrectUser, async (req, res) => {
+	const { id } = req.body;
+	const user = res.locals.user;
+	await User.addFavoriteTv(user.id, id);
+	return res.json('favorited');
+});
+
 module.exports = router;
