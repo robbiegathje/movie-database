@@ -73,7 +73,7 @@ class User {
 		return results.rows[0];
 	}
 
-	static async getFavorites(id) {
+	static async getFavoriteMovies(id) {
 		const results = await db.query(
 			`SELECT movies.id, api_id, imdb_id, title, tagline, overview, poster_path, release_date, runtime
 			FROM movies
@@ -84,7 +84,7 @@ class User {
 		return results.rows;
 	}
 
-	static async addFavorite(userId, movieApiId) {
+	static async addFavoriteMovie(userId, movieApiId) {
 		const movie = await Movie.save(movieApiId);
 		await db.query(
 			`INSERT INTO favorited_movies (user_id, movie_id)

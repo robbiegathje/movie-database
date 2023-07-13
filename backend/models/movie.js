@@ -57,7 +57,13 @@ class Movie {
 
 	static async save(id) {
 		const movie = await Movie.getRawData(id);
-		const query = `INSERT INTO movies
+		const query = (await Movie.getLocal(id))
+			? `UPDATE movies
+			SET api_id=$1, imdb_id=$2, title=$3, tagline=$4, overview=$5,
+			poster_path=$6, release_date=$7, runtime=$8
+			WHERE api_id=$1
+			RETURNING id, api_id, imdb_id, title, tagline, overview, poster_path, release_date, runtime`
+			: `INSERT INTO movies
 		(api_id, imdb_id, title, tagline, overview, poster_path, release_date, runtime)
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 		RETURNING id, api_id, imdb_id, title, tagline, overview, poster_path, release_date, runtime`;
@@ -78,7 +84,7 @@ class Movie {
 		const results = await db.query(
 			`SELECT id, api_id, imdb_id, title, tagline, overview, poster_path, release_date, runtime
 			FROM movies
-			WHERE id=$1`,
+			WHERE api_id=$1`,
 			[id]
 		);
 		return results.rows[0];
