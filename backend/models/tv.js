@@ -1,5 +1,6 @@
 const axios = require('axios');
 const db = require('../db');
+const getNestedProperty = require('../helpers/getNestedProperty');
 const {
 	apiBaseUrl,
 	apiImageUrl,
@@ -25,19 +26,23 @@ class Tv {
 
 	static filterData(raw) {
 		const series = {
-			api_id: raw.id,
-			imdb_url: imdbBaseUrl + raw.external_ids.imdb_id,
+			api_id: raw.api_id ? raw.api_id : raw.id,
+			imdb_url: getNestedProperty(raw, 'external_ids.imdb_id')
+				? imdbBaseUrl + raw.external_ids.imdb_id
+				: undefined,
 			name: raw.name,
 			tagline: raw.tagline,
 			genres: raw.genres,
 			overview: raw.overview,
-			poster_url: apiImageUrl + posterSize + raw.poster_path,
+			poster_url: raw.poster_path
+				? apiImageUrl + posterSize + raw.poster_path
+				: undefined,
 			first_air_date: raw.first_air_date,
 			seasons: raw.number_of_seasons,
 			episodes: raw.number_of_episodes,
 			status: raw.status,
-			videos: raw.videos.results,
-			streaming: raw['watch/providers'].results.US.flatrate,
+			videos: getNestedProperty(raw, 'videos.results'),
+			streaming: getNestedProperty(raw, 'watch/providers.results.US.flatrate'),
 			credits: raw.credits,
 		};
 		return series;
@@ -54,7 +59,9 @@ class Tv {
 			headers: apiRequestHeaders,
 			params: { query },
 		});
-		return res.data.results;
+		return res.data.results.map((series) => {
+			return Tv.filterData(series);
+		});
 	}
 
 	static async save(id) {

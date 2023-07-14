@@ -82,7 +82,9 @@ class User {
 			WHERE user_id=$1`,
 			[id]
 		);
-		return results.rows;
+		return results.rows.map((movie) => {
+			return Movie.filterData(movie);
+		});
 	}
 
 	static async addFavoriteMovie(userId, movieApiId) {
@@ -111,7 +113,9 @@ class User {
 			WHERE user_id=$1`,
 			[id]
 		);
-		return results.rows;
+		return results.rows.map((series) => {
+			return Tv.filterData(series);
+		});
 	}
 
 	static async addFavoriteTv(userId, tvApiId) {
