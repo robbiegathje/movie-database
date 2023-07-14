@@ -8,4 +8,10 @@ router.get('/:id', async (req, res) => {
 	return res.json({ movie });
 });
 
+router.post('/:id', async (req, res) => {
+	const id = req.params.id;
+	const movie = await Movie.save(id);
+	return res.json({ movie });
+});
+
 module.exports = router;

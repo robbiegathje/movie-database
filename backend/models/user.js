@@ -94,6 +94,15 @@ class User {
 		);
 	}
 
+	static async removeFavoriteMovie(userId, movieApiId) {
+		const movie = await Movie.getLocal(movieApiId);
+		await db.query(
+			`DELETE FROM favorited_movies
+			WHERE user_id=$1 AND movie_id=$2`,
+			[userId, movie.id]
+		);
+	}
+
 	static async getFavoriteTv(id) {
 		const results = await db.query(
 			`SELECT tv.id, api_id, imdb_id, name, tagline, overview, poster_path, first_air_date, seasons, episodes, status
@@ -110,6 +119,15 @@ class User {
 		await db.query(
 			`INSERT INTO favorited_tv (user_id, tv_id)
 			VALUES ($1, $2)`,
+			[userId, series.id]
+		);
+	}
+
+	static async removeFavoriteTv(userId, tvApiId) {
+		const series = await Tv.getLocal(tvApiId);
+		await db.query(
+			`DELETE FROM favorited_tv
+			WHERE user_id=$1 AND tv_id=$2`,
 			[userId, series.id]
 		);
 	}

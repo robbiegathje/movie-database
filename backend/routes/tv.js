@@ -8,4 +8,10 @@ router.get('/:id', async (req, res) => {
 	return res.json({ series });
 });
 
+router.post('/:id', async (req, res) => {
+	const id = req.params.id;
+	const series = await Tv.save(id);
+	return res.json({ series });
+});
+
 module.exports = router;
