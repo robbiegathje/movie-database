@@ -1,5 +1,6 @@
 const axios = require('axios');
 const db = require('../db');
+const Genre = require('./genre');
 const getNestedProperty = require('../helpers/getNestedProperty');
 const {
 	apiBaseUrl,
@@ -88,7 +89,27 @@ class Tv {
 			series.number_of_episodes,
 			series.status,
 		]);
+		await Tv.saveTvGenres(series.id, series.genres);
 		return results.rows[0];
+	}
+
+	static async saveTvGenres(id, genres) {
+		const series = await Tv.getLocal(id);
+		for (let genre of genres) {
+			const savedGenre = await Genre.save(genre.id, genre.name);
+			const results = await db.query(
+				`SELECT id FROM tv_genres WHERE genre_id=$1 AND tv_id=$2`,
+				[savedGenre.id, series.id]
+			);
+			const existingTvGenre = results.rows[0];
+			if (!existingTvGenre) {
+				await db.query(
+					`INSERT INTO tv_genres (genre_id, tv_id)
+				VALUES ($1, $2)`,
+					[savedGenre.id, series.id]
+				);
+			}
+		}
 	}
 
 	static async getLocal(id) {
@@ -99,6 +120,18 @@ class Tv {
 			[id]
 		);
 		return results.rows[0];
+	}
+
+	static async getTvGenres(id) {
+		const series = await Tv.getLocal(id);
+		const results = await db.query(
+			`SELECT name
+			FROM genres
+			JOIN tv_genres ON genres.id = tv_genres.genre_id
+			WHERE tv_id=$1`,
+			[series.id]
+		);
+		return results.rows;
 	}
 }
 

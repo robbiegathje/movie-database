@@ -1,5 +1,6 @@
 const axios = require('axios');
 const db = require('../db');
+const Genre = require('./genre');
 const getNestedProperty = require('../helpers/getNestedProperty');
 const {
 	apiBaseUrl,
@@ -82,7 +83,27 @@ class Movie {
 			movie.release_date,
 			movie.runtime,
 		]);
+		await Movie.saveMovieGenres(movie.id, movie.genres);
 		return results.rows[0];
+	}
+
+	static async saveMovieGenres(id, genres) {
+		const movie = await Movie.getLocal(id);
+		for (let genre of genres) {
+			const savedGenre = await Genre.save(genre.id, genre.name);
+			const results = await db.query(
+				`SELECT id FROM movie_genres WHERE genre_id=$1 AND movie_id=$2`,
+				[savedGenre.id, movie.id]
+			);
+			const existingMovieGenre = results.rows[0];
+			if (!existingMovieGenre) {
+				await db.query(
+					`INSERT INTO movie_genres (genre_id, movie_id)
+				VALUES ($1, $2)`,
+					[savedGenre.id, movie.id]
+				);
+			}
+		}
 	}
 
 	static async getLocal(id) {
@@ -93,6 +114,18 @@ class Movie {
 			[id]
 		);
 		return results.rows[0];
+	}
+
+	static async getMovieGenres(id) {
+		const movie = await Movie.getLocal(id);
+		const results = await db.query(
+			`SELECT name
+			FROM genres
+			JOIN movie_genres ON genres.id = movie_genres.genre_id
+			WHERE movie_id=$1`,
+			[movie.id]
+		);
+		return results.rows;
 	}
 }
 
