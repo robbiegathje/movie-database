@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { secretKey } = require('../config');
+const { UnauthorizedError, ForbiddenError } = require('../expressError');
 
 function authenticateJWT(req, res, next) {
 	try {
@@ -17,7 +18,7 @@ function authenticateJWT(req, res, next) {
 function verifyLoggedIn(req, res, next) {
 	try {
 		if (!res.locals.user) {
-			throw new Error('unauthorized');
+			throw new UnauthorizedError();
 		}
 		return next();
 	} catch (error) {
@@ -28,9 +29,9 @@ function verifyLoggedIn(req, res, next) {
 function verifyCorrectUser(req, res, next) {
 	try {
 		if (!res.locals.user) {
-			throw new Error('unauthorized');
+			throw new UnauthorizedError();
 		} else if (+res.locals.user.id !== +req.params.id) {
-			throw new Error('unauthorized');
+			throw new ForbiddenError();
 		}
 		return next();
 	} catch (error) {
