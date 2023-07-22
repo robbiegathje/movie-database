@@ -10,6 +10,8 @@ const {
 	posterSize,
 	searchPath,
 } = require('../config');
+const { NotFoundError } = require('../expressError');
+const { MOVIE_NOT_FOUND } = require('../errorMessages');
 
 const MOVIE_PATH = '/movie';
 const APPEND_TO_RESPONSE = {
@@ -18,11 +20,15 @@ const APPEND_TO_RESPONSE = {
 
 class Movie {
 	static async getRawData(id) {
-		const res = await axios.get(apiBaseUrl + MOVIE_PATH + `/${id}`, {
-			headers: apiRequestHeaders,
-			params: APPEND_TO_RESPONSE,
-		});
-		return res.data;
+		try {
+			const res = await axios.get(apiBaseUrl + MOVIE_PATH + `/${id}`, {
+				headers: apiRequestHeaders,
+				params: APPEND_TO_RESPONSE,
+			});
+			return res.data;
+		} catch (error) {
+			throw new NotFoundError(MOVIE_NOT_FOUND);
+		}
 	}
 
 	static filterData(raw) {

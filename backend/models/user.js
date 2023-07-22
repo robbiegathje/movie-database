@@ -3,6 +3,11 @@ const bcrypt = require('bcrypt');
 const Movie = require('./movie');
 const Tv = require('./tv');
 const { bcryptWorkFactor } = require('../config');
+const { BadRequestError, UnauthorizedError } = require('../expressError');
+const {
+	DUPLICATE_USERNAME,
+	FAILED_AUTHENTICATION,
+} = require('../errorMessages');
 
 class User {
 	static async getById(id) {
@@ -27,14 +32,17 @@ class User {
 
 	static async authenticate(username, password) {
 		const user = await User.getByUsername(username);
-		if (await bcrypt.compare(password, user.password)) {
+		if (user && (await bcrypt.compare(password, user.password))) {
 			return user;
 		} else {
-			return false;
+			throw new UnauthorizedError(FAILED_AUTHENTICATION);
 		}
 	}
 
 	static async register(username, password) {
+		if (await User.getByUsername(username)) {
+			throw new BadRequestError(DUPLICATE_USERNAME);
+		}
 		const hashedPassword = await bcrypt.hash(password, bcryptWorkFactor);
 		const results = await db.query(
 			`INSERT INTO users (username, password)
@@ -46,8 +54,10 @@ class User {
 	}
 
 	static async changePassword(username, password, newPassword) {
-		if (!User.authenticate(username, password)) {
-			throw new Error('WRONG');
+		try {
+			await User.authenticate(username, password);
+		} catch (error) {
+			throw error;
 		}
 		const hashedPassword = await bcrypt.hash(newPassword, bcryptWorkFactor);
 		const results = await db.query(
@@ -61,8 +71,10 @@ class User {
 	}
 
 	static async changeUsername(username, password, newUsername) {
-		if (!User.authenticate(username, password)) {
-			throw new Error('WRONG');
+		try {
+			await User.authenticate(username, password);
+		} catch (error) {
+			throw error;
 		}
 		const results = await db.query(
 			`UPDATE users
