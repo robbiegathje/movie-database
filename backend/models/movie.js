@@ -62,7 +62,10 @@ class Movie {
 			headers: apiRequestHeaders,
 			params: { query },
 		});
-		return res.data.results.map((movie) => {
+		const filteredResults = res.data.results.filter((movie) => {
+			return movie.original_language === 'en';
+		});
+		return filteredResults.map((movie) => {
 			return Movie.filterData(movie);
 		});
 	}
