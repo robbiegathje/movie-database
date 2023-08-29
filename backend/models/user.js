@@ -25,7 +25,7 @@ class User {
 			`SELECT id, username, password
 			FROM users
 			WHERE username=$1`,
-			[username]
+			[username.toLowerCase()]
 		);
 		return results.rows[0];
 	}
@@ -48,7 +48,7 @@ class User {
 			`INSERT INTO users (username, password)
 			VALUES ($1, $2)
 			RETURNING id, username, password`,
-			[username, hashedPassword]
+			[username.toLowerCase(), hashedPassword]
 		);
 		return results.rows[0];
 	}
@@ -65,7 +65,7 @@ class User {
 			SET password=$1
 			WHERE username=$2
 			RETURNING id, username, password`,
-			[hashedPassword, username]
+			[hashedPassword, username.toLowerCase()]
 		);
 		return results.rows[0];
 	}
@@ -81,7 +81,7 @@ class User {
 			SET username=$1
 			WHERE username=$2
 			RETURNING id, username, password`,
-			[newUsername, username]
+			[newUsername.toLowerCase(), username.toLowerCase()]
 		);
 		return results.rows[0];
 	}
