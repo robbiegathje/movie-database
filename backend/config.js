@@ -1,4 +1,9 @@
-const { apiToken, secretKey } = require('./secret');
+// const { apiToken, secretKey } = require('./secret');
+
+require('dotenv').config();
+
+const apiToken = process.env.apiToken;
+const secretKey = process.env.secretKey;
 
 const config = {
 	apiBaseUrl: 'https://api.themoviedb.org/3',
