@@ -1,0 +1,21 @@
+{
+	"type": "object",
+	"default": {},
+	"title": "New Username Schema",
+	"required": ["newUsername"],
+	"properties": {
+		"newUsername": {
+			"type": "string",
+			"pattern": "^[A-Za-z0-9_-]+$",
+			"minLength": 6,
+			"maxLength": 20,
+			"title": "The new username Schema",
+			"examples": ["test_user123"]
+		}
+	},
+	"examples": [
+		{
+			"newUsername": "test_user123"
+		}
+	]
+}

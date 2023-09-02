@@ -1,5 +1,10 @@
 const express = require('express');
+const jsonschema = require('jsonschema');
 const User = require('../models/user');
+const newPasswordSchema = require('../schemas/newPasswordSchema.json');
+const newUsernameSchema = require('../schemas/newUsernameSchema.json');
+const { BadRequestError } = require('../expressError');
+const { INVALID_USERNAME } = require('../errorMessages');
 const { verifyCorrectUser } = require('../middleware/auth');
 const { createToken } = require('../helpers/tokens');
 const router = new express.Router();
@@ -11,6 +16,13 @@ router.patch(
 		const { password, newPassword } = req.body;
 		const user = res.locals.user;
 		try {
+			const validator = jsonschema.validate({ newPassword }, newPasswordSchema);
+			if (!validator.valid) {
+				const errors = validator.errors.map((error) => {
+					return error.stack.replace('instance.newPassword', 'new password');
+				});
+				throw new BadRequestError(errors);
+			}
 			await User.changePassword(user.username, password, newPassword);
 			return res.json('password changed');
 		} catch (error) {
@@ -26,6 +38,19 @@ router.patch(
 		const { password, newUsername } = req.body;
 		const user = res.locals.user;
 		try {
+			const validator = jsonschema.validate({ newUsername }, newUsernameSchema);
+			if (!validator.valid) {
+				const errors = validator.errors.map((error) => {
+					if (
+						error.stack ===
+						'instance.username does not match pattern "^[A-Za-z0-9_-]+$"'
+					) {
+						return INVALID_USERNAME;
+					}
+					return error.stack.replace('instance.newUsername', 'new username');
+				});
+				throw new BadRequestError(errors);
+			}
 			const updatedUser = await User.changeUsername(
 				user.username,
 				password,

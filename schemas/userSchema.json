@@ -1,0 +1,28 @@
+{
+	"type": "object",
+	"default": {},
+	"title": "User Schema",
+	"required": ["username", "password"],
+	"properties": {
+		"username": {
+			"type": "string",
+			"pattern": "^[A-Za-z0-9_-]+$",
+			"minLength": 6,
+			"maxLength": 20,
+			"title": "The username Schema",
+			"examples": ["test_user123"]
+		},
+		"password": {
+			"type": "string",
+			"minLength": 8,
+			"title": "The password Schema",
+			"examples": ["anything$#*!@0019-34."]
+		}
+	},
+	"examples": [
+		{
+			"username": "test_user123",
+			"password": "anything$#*!@0019-34."
+		}
+	]
+}
