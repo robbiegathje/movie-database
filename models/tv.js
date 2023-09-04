@@ -46,8 +46,8 @@ class Tv {
 				? apiImageUrl + posterSize + raw.poster_path
 				: undefined,
 			first_air_date: raw.first_air_date,
-			seasons: raw.seasons ? raw.seasons : raw.number_of_seasons,
-			episodes: raw.episodes ? raw.episodes : raw.number_of_episodes,
+			seasons: raw.number_of_seasons,
+			episodes: raw.number_of_episodes,
 			status: raw.status,
 			videos: getNestedProperty(raw, 'videos.results'),
 			streaming: getNestedProperty(raw, 'watch/providers.results.US.flatrate'),

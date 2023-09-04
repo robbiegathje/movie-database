@@ -243,6 +243,8 @@ describe('addFavoriteTv', () => {
 				...Tv.filterData(MOCK_SERIES_FROM_API),
 				first_air_date: expect.any(Date),
 				genres: undefined,
+				seasons: undefined,
+				episodes: undefined,
 			},
 		];
 		expect(favorites).toEqual(expectedReturn);
