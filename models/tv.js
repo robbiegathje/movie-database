@@ -32,13 +32,12 @@ class Tv {
 	}
 
 	static filterData(raw) {
+		const imdb_id = raw.imdb_id
+			? raw.imdb_id
+			: getNestedProperty(raw, 'external_ids.imdb_id');
 		const series = {
 			api_id: raw.api_id ? raw.api_id : raw.id,
-			imdb_url: raw.imdb_id
-				? imdbBaseUrl + raw.imdb_id
-				: getNestedProperty(raw, 'external_ids.imdb_id')
-				? imdbBaseUrl + raw.external_ids.imdb_id
-				: undefined,
+			imdb_url: imdb_id ? imdbBaseUrl + imdb_id : undefined,
 			name: raw.name,
 			tagline: raw.tagline,
 			genres: raw.genres,
