@@ -34,7 +34,9 @@ class Tv {
 	static filterData(raw) {
 		const series = {
 			api_id: raw.api_id ? raw.api_id : raw.id,
-			imdb_url: getNestedProperty(raw, 'external_ids.imdb_id')
+			imdb_url: raw.imdb_id
+				? imdbBaseUrl + raw.imdb_id
+				: getNestedProperty(raw, 'external_ids.imdb_id')
 				? imdbBaseUrl + raw.external_ids.imdb_id
 				: undefined,
 			name: raw.name,
@@ -45,8 +47,8 @@ class Tv {
 				? apiImageUrl + posterSize + raw.poster_path
 				: undefined,
 			first_air_date: raw.first_air_date,
-			seasons: raw.number_of_seasons,
-			episodes: raw.number_of_episodes,
+			seasons: raw.seasons ? raw.seasons : raw.number_of_seasons,
+			episodes: raw.episodes ? raw.episodes : raw.number_of_episodes,
 			status: raw.status,
 			videos: getNestedProperty(raw, 'videos.results'),
 			streaming: getNestedProperty(raw, 'watch/providers.results.US.flatrate'),

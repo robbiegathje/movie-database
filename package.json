@@ -1,21 +1,21 @@
 {
-  "name": "movie-database-api",
-  "version": "1.0.0",
-  "description": "API for movie-database capstone",
-  "main": "server.js",
-  "scripts": {
-    "test": "jest"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "axios": "^1.4.0",
-    "bcrypt": "^5.1.0",
-    "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
-    "express": "^4.18.2",
-    "jsonschema": "^1.4.1",
-    "jsonwebtoken": "^9.0.1",
-    "pg": "^8.11.1"
-  }
+	"name": "movie-database-api",
+	"version": "1.0.0",
+	"description": "API for movie-database capstone",
+	"main": "server.js",
+	"scripts": {
+		"test": "jest --runInBand"
+	},
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"axios": "^1.4.0",
+		"bcrypt": "^5.1.0",
+		"cors": "^2.8.5",
+		"dotenv": "^16.3.1",
+		"express": "^4.18.2",
+		"jsonschema": "^1.4.1",
+		"jsonwebtoken": "^9.0.1",
+		"pg": "^8.11.1"
+	}
 }
